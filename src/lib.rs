@@ -282,6 +282,12 @@ impl IndicatifSpanContext {
             .and_then(|pb| pb.length())
             .or(self.pb_init_settings.len)
     }
+
+    fn get_progress_bar_position(&self) -> Option<u64> {
+        self.progress_bar
+            .as_ref()
+            .map(|pb| pb.position())
+            .or(self.pb_init_settings.pos)
     }
 }
 
