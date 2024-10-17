@@ -70,6 +70,10 @@ pub trait IndicatifSpanExt {
     /// Sets the message of the progress bar for this span. See
     /// [set_message](indicatif::ProgressBar::set_message).
     fn pb_set_message(&self, msg: &str);
+
+    /// Gets the current length of the progress bar for this span. See
+    /// [set_message](indicatif::ProgressBar::length).
+    fn pb_get_length(&self) -> Option<u64>;
 }
 
 impl IndicatifSpanExt for Span {
@@ -112,5 +116,19 @@ impl IndicatifSpanExt for Span {
         apply_to_indicatif_span(self, |indicatif_ctx| {
             indicatif_ctx.set_progress_bar_message(msg.to_string());
         });
+    }
+
+    fn pb_get_length(&self) -> Option<u64> {
+        let mut len = None;
+
+        self.with_subscriber(|(id, subscriber)| {
+            if let Some(get_context) = subscriber.downcast_ref::<WithContext>() {
+                get_context.with_context(subscriber, id, |ctx| {
+                    len = ctx.get_progress_bar_length();
+                });
+            }
+        });
+
+        len
     }
 }

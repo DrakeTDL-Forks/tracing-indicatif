@@ -275,6 +275,14 @@ impl IndicatifSpanContext {
             *pb_len += len;
         }
     }
+
+    fn get_progress_bar_length(&self) -> Option<u64> {
+        self.progress_bar
+            .as_ref()
+            .and_then(|pb| pb.length())
+            .or(self.pb_init_settings.len)
+    }
+    }
 }
 
 /// The layer that handles creating and managing indicatif progress bars for active spans. This
